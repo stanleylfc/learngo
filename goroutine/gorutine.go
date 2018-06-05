@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	runtime.GOMAXPROCS(2)
-	v2()
+	runtime.GOMAXPROCS(4)
+	v5()
 }
 
 
@@ -21,7 +21,7 @@ func v1() {
 		}(i)
 	}
 
-	time.Sleep(time.Millisecond)
+	time.Sleep(time.Millisecond) //毫秒
 }
 
 func v2() {
@@ -47,7 +47,7 @@ func v3() {
 				a[i]++ //goroutine  不交出控制权
 				runtime.Gosched()  //手动交出控制权
 			}
-		}()
+		}() // go run -race
 	}
 
 	//控制权未交出， time.Sleep 不执行
@@ -69,4 +69,15 @@ func v4() {
 	//控制权未交出， time.Sleep 不执行
 	time.Sleep(time.Millisecond)
 	fmt.Println(a)
+}
+
+func v5() {
+	for i:=0; i<1000; i++ {  //测试线程数量
+		go func(i int) {
+			for{
+				fmt.Printf("hello from goroutine %d\n", i)
+			}
+		}(i)
+	}
+	time.Sleep(time.Minute)
 }
